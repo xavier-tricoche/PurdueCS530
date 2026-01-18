@@ -1,0 +1,53 @@
+#!/usr/bin/env python
+
+'''
+ Purdue CS530 - Introduction to Scientific Visualization
+ Fall 2026
+
+ Simple example to illustrate the typical structure of the rendering 
+ pipeline in VTK. Here, we draw a sphere and enter the interactive mode.
+'''
+
+import vtk
+from utils.vtk_helper import connect
+from utils.vtk_rendering import make_actor, make_render_kit
+
+def render_demo():
+    
+    # Step 1. Data Source
+    #   Create a sphere geometry
+    sphere_src = vtk.vtkSphereSource(radius=1.0, center=(0.0, 0.0, 0.0), theta_resolution=20, phi_resolution=20)
+    
+    # Step 2. Data Processing
+    #   We will visualize the edges of the sphere that we just created. For 
+    #   that, we must first extract the edges from the sphere triangulation.
+    #   VTK makes that easy.
+    edge_extractor = vtk.vtkExtractEdges()
+    #   Create a pipeline link between sphere source and edge extractor
+    connect(sphere_src, edge_extractor)
+    #   Now our edge extractor acts as a second data source: it supplies the 
+    #   geometry of the edges of the sphere
+    
+    # Step 3. Actors
+    sphere_actor = make_actor(sphere_src, color=(1, 0.5, 0))
+    edge_actor = make_actor(edge_extractor, color=(0, 0.5, 0), line_width=3)
+    #   The actor now controls the graphical properties of the sphere. We can 
+    #   access them to change the color of the sphere. The color is set in RGB
+    #   mode using values from 0 to 1 for each of the three color channels. 
+    #   Here we set the color to orange.
+    
+    # Step 4. Renderering pipeline 
+    renderer, window, interactor = make_render_kit(actors=[sphere_actor, edge_actor], background=(0.1, 0.2, 0.4), size=(600, 600))
+    
+    interactor.Initialize()
+    
+    # Step 5. Actual Rendering
+    #   Draw something on the screen (finally!)
+    window.Render()
+    
+    # Step 6. Interaction Starts
+    #   We are done: entering the interaction loop. The user is in charge
+    interactor.Start()
+
+if __name__=="__main__":
+      render_demo()
