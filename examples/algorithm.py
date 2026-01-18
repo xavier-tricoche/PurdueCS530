@@ -6,10 +6,7 @@
 
  Simple example showing how to create a vtkAlgorithm (aka filter) and how
  to interact with it in a VTK pipeline using a QtVTKProgram parent class.
- '''#!/usr/bin/env python
-
-# Purdue CS530 - Introduction to Scientific Visualization
-# Spring 2026
+ '''
 
 import vtk
 import argparse
