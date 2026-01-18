@@ -14,9 +14,9 @@ import sys
 import vtk
 import argparse
 
-from utils.vtk_helper import connect
-from utils.vtk_rendering import make_actor, make_render_kit, take_screenshot
-from utils.vtk_camera import print_camera
+from cs530.utils.vtk_helper import connect
+from cs530.utils.vtk_rendering import make_actor, make_render_kit, take_screenshot
+from cs530.utils.vtk_camera import print_camera
 frame_counter = 0
 
 def make_sphere(renderer):
@@ -48,8 +48,7 @@ class Callback:
         file_name = self.args.output + str(self.frame_counter).zfill(5) + ".png"
         take_screenshot(self.window, file_name)
         self.frame_counter += 1
-        if self.args.verbose:
-            print(file_name + " has been successfully exported")
+        print(file_name + " has been successfully exported")
 
     def __call__(self, obj, event):
         # ---------------------------------------------------------------
@@ -74,7 +73,6 @@ def main():
     parser.add_argument('-r', '--resolution', type=int, metavar='int', nargs=2, help='Image resolution', default=[1024, 768])
     parser.add_argument('-b', '--background', type=int, metavar='int', nargs=3, help='Background color', default=[0,0,0])
     parser.add_argument('-o', '--output', type=str, metavar='filename', help='Base name for screenshots', default='frame_')
-    parser.add_argument('-v', '--verbose', action='store_true', help='Toggle on verbose output')
 
     args = parser.parse_args()
     renderer, window, interactor = make_render_kit(size=args.resolution, bg=args.background)

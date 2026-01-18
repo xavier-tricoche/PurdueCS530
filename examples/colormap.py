@@ -3,7 +3,7 @@ import vtk
 from vtk.util import numpy_support
 import argparse 
 
-from utils.vtk_rendering import make_actor, make_render_kit 
+from cs530.utils.vtk_rendering import make_actor, make_render_kit 
 
 delta = 0.01
 

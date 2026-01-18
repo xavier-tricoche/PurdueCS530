@@ -7,7 +7,7 @@
  Simple example showing how to create a vtkAlgorithm (aka filter) and how
  to interact with it in a VTK pipeline using a QtVTKProgram parent class.
  '''
- 
+
 import vtk
 import argparse
 import sys
@@ -26,16 +26,15 @@ except ImportError:
         from PyQt5.QtCore import Qt
         from PyQt5.QtGui import QColor
 
-from utils import vtk_rendering_helper as vrh
-from utils import vtk_helper as vh
-from utils import vtk_qt as vqt
-from utils import vtk_colorbar as vcb
-from utils import vtk_camera as vcam
+from cs530.utils.vtk_rendering import make_actor
+from cs530.utils.vtk_helper import connect
+from cs530.utils.vtk_qt import slider_setup, QtVTKProgram
+from cs530.utils.vtk_colorbar import Colorbar
 
 frame_counter = 0
 
 from vtk.util.vtkAlgorithm import VTKPythonAlgorithmBase
-import vtk.util.numpy_support
+from vtk.util import numpy_support as nps
 
 frame_counter = 0
 
@@ -62,9 +61,9 @@ class MySphere(VTKPythonAlgorithmBase):
         self.modified = True
 
     def ComputeLatitude(self):
-        coords = vtk.util.numpy_support.vtk_to_numpy(self.sphere.GetPoints().GetData())
+        coords = nps.vtk_to_numpy(self.sphere.GetPoints().GetData())
         values = coords[:,2]*90
-        data = vtk.util.numpy_support.numpy_to_vtk(values)
+        data = nps.numpy_to_vtk(values)
         data.SetName('latitude')
         self.sphere.GetPointData().AddArray(data)
         self.sphere.GetPointData().SetActiveScalars('latitude')
@@ -104,7 +103,7 @@ class MySphere(VTKPythonAlgorithmBase):
         output.ShallowCopy(self.sphere)
         return 1
 
-class AlgoDemo (vqt.QtVTKProgram):
+class AlgoDemo (QtVTKProgram):
     def __init__(self, parent = None):
         super().__init__(parent)
 
@@ -115,7 +114,7 @@ class AlgoDemo (vqt.QtVTKProgram):
         self.ctf.AddRGBPoint(90, 1, 1, 0) # north pole is yellow
 
         # create a color bar to explain what those colors mean
-        bar = vcb.colorbar(self.ctf)
+        bar = Colorbar(self.ctf)
         bar.set_label(nlabels=7, size=10)
         bar.set_position([0.9, 0.5]) # right center of the window
         bar.set_size(width=80, height=300)
@@ -155,12 +154,12 @@ class AlgoDemo (vqt.QtVTKProgram):
         self.sphere.SetThetaResolution(self.theta)
         self.sphere.SetPhiResolution(self.phi)
         self.sphere.SetRadius(self.radius)
-        sphere_actor = vrh.make_actor(self.sphere, ctf=self.ctf)
+        sphere_actor = make_actor(self.sphere, ctf=self.ctf)
         self.edges = vtk.vtkExtractEdges()
-        vh.connect(self.sphere, self.edges)
+        connect(self.sphere, self.edges)
         self.edge_tubes = vtk.vtkTubeFilter(number_of_sides=10, capping=True, radius=self.radius/1000.0)
-        vh.connect(self.edges, self.edge_tubes)
-        self.edge_actor = vrh.make_actor(self.edge_tubes, color=(0, 0, 1))
+        connect(self.edges, self.edge_tubes)
+        self.edge_actor = make_actor(self.edge_tubes, color=(0, 0, 1))
         self.color = (0, 0, 1)
 
         # Create the Renderer
@@ -169,9 +168,9 @@ class AlgoDemo (vqt.QtVTKProgram):
         self.renderer.GradientBackgroundOn()  # Set gradient for background
         self.renderer.SetBackground(0.75, 0.75, 0.75)  # Set background to silver
 
-        vqt.slider_setup(self.slider_theta, self.theta, [3, 200], 10)
-        vqt.slider_setup(self.slider_phi, self.phi, [3, 200], 10)
-        vqt.slider_setup(self.slider_radius, 1, [1, 10], 1)
+        slider_setup(self.slider_theta, self.theta, [3, 200], 10)
+        slider_setup(self.slider_phi, self.phi, [3, 200], 10)
+        slider_setup(self.slider_radius, 1, [1, 10], 1)
 
     def theta_callback(self, val):
         self.theta = val

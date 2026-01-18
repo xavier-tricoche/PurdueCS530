@@ -1,22 +1,22 @@
-from PurdueCS530.utils.vtk_camera import (
+from cs530.utils.vtk_camera import (
     save_camera,
     load_camera,
     print_camera,
     save_light,
-    load_light,
+    load_lights,
     print_light,    
 )
-from PurdueCS530.utils.vtk_colorbar import (
-    colorbar,
-    colorbar_param,
+from cs530.utils.vtk_colorbar import (
+    Colorbar,
+    ColorbarParam,
 )
-from PurdueCS530.utils.vtk_colors import (
+from cs530.utils.vtk_colors import (
     make_cube_axis_actor,
-    make_color_map,
-    make_color_transfer_function,
-    make_opacity_transfer_function,
+    make_colormap,
+    create_vtk_colors,
+    import_palette,
 )
-from PurdueCS530.utils.vtk_dataset import (
+from cs530.utils.vtk_dataset import (
     make_vtkpoints,
     make_points,
     make_spheres,
@@ -34,24 +34,24 @@ from PurdueCS530.utils.vtk_dataset import (
     add_mesh3d,
     clip_polydata,
 )
-from PurdueCS530.utils.vtk_helper import (
+from cs530.utils.vtk_helper import (
     connect,
     correct_reader,
     correct_writer,
 )
-from PurdueCS530.utils.vtk_interpolation import (
+from cs530.utils.vtk_interpolation import (
     Interpolator,
     TimeInterpolator,
 )
-from PurdueCS530.utils.vtk_io import (
-    readVTK,
-    saveVTK,
+from cs530.utils.vtk_io import (
+    read_vtk_file,
+    save_vtk_file,
 )
-from PurdueCS530.utils.vtk_qt import (
+from cs530.utils.vtk_qt import (
     slider_setup,
     QtVTKProgram,
 )
-from PurdueCS530.utils.rendering import (
+from cs530.utils.vtk_rendering import (
     make_mapper,
     make_actor,
     make_render_kit,
@@ -61,6 +61,6 @@ from PurdueCS530.utils.rendering import (
     make_fiber_actor,
     take_screenshot,
 )
-from PurdueCS530.tools import (
+from cs530.tools.pathlines import (
     trace_pathlines,
 )

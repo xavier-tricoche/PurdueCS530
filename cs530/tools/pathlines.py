@@ -8,13 +8,17 @@ from tqdm import tqdm
 import os
 import fnmatch
 
+__all__ = [
+    'trace_pathlines',
+]
+
 import sys
 
-from utils.vtk_interpolation_helper import *
-from utils.vtk_io import readVTK
-from utils.vtk_dataset import make_points, add_scalars, add_polylines
-from utils.vtk_colors import make_colormap
-from utils.vtk_rendering import make_actor, make_render_kit
+from cs530.utils.vtk_interpolation import *
+from cs530.utils.vtk_io import read_vtk_file
+from cs530.utils.vtk_dataset import make_points, add_scalars, add_polylines
+from cs530.utils.vtk_colors import make_colormap
+from cs530.utils.vtk_rendering import make_actor, make_render_kit
 
 def find_files(path, patterns):
     filenames = []
@@ -51,7 +55,7 @@ def trace_pathlines(seed, times, filenames, value_name, **kwargs):
     intp = None
 
     # determine bounds 
-    reader = readVTK(filenames[0])
+    reader = read_vtk_file(filenames[0])
     reader.Update()
     bounds = reader.GetOutput().GetBounds()
     event = OutOfBoundsEvent(bounds)
@@ -155,7 +159,7 @@ if __name__ == '__main__':
         raise RuntimeError('Only a single time step available')
 
     # determine bounds 
-    reader = readVTK(filenames[0])
+    reader = read_vtk_file(filenames[0])
     reader.Update()
     bounds = reader.GetOutput().GetBounds()
     event = OutOfBoundsEvent(bounds)

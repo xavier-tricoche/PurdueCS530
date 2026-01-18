@@ -8,12 +8,12 @@ from a scalar image.
 
 import numpy as np 
 import vtk 
-from vtk.util import numpy_support
+from vtk.util import numpy_support as nps
 import math
 import argparse
 
-from utils.vtk_io_helper import readVTK
-import utils.vtk_rendering_helper as vrh
+from cs530.utils.vtk_io import read_vtk_file
+from cs530.utils.vtk_rendering import make_actor, make_render_kit
 
 # create a sinc raster image
 # Note: sinc function is sin(x)/x and is a perfect reconstruction filter
@@ -31,7 +31,7 @@ def make_sinc(n, width):
                 data[i+j*n] = math.sin(r)/r
 
     # pack the data into a VTK data structure
-    vtk_array = numpy_support.numpy_to_vtk(data)
+    vtk_array = nps.numpy_to_vtk(data)
     image = vtk.vtkImageData(dimensions=[n, n, 1], spacing=[dh, dh, 1], origin=[-width, width, 0])
     image.GetPointData().SetScalars(vtk_array)
     return image
@@ -47,12 +47,12 @@ def on_sphere(image, radius=1, center=[0, 0, 0]):
     sphere_src = vtk.vtkSphereSource(center=center, radius=radius, theta_resolution=h, phi_resolution=w)
     sphere_src.Update()
     sphere = sphere_src.GetOutput()
-    values = numpy_support.vtk_to_numpy(image.GetPointData().GetScalars())
+    values = nps.vtk_to_numpy(image.GetPointData().GetScalars())
     new_values = np.zeros((2+w*(h-2)))
     new_values[0] = values[0]
     new_values[1] = values[-1]
     new_values[2:] = values[w:(h-1)*w]
-    sphere.GetPointData().SetScalars(numpy_support.numpy_to_vtk(new_values))
+    sphere.GetPointData().SetScalars(nps.numpy_to_vtk(new_values))
     return sphere
 
 if __name__ == '__main__':
@@ -68,7 +68,7 @@ if __name__ == '__main__':
     if args.input is None:
         image = make_sinc(args.number, args.width)
     else:
-        image = readVTK(args.input)
+        image = read_vtk_file(args.input)
 
     if args.on_sphere:
         sphere = on_sphere(image)
@@ -76,8 +76,8 @@ if __name__ == '__main__':
     else:
         warp = do_warp(image, args.factor)
     
-    actor = vrh.make_actor(warp)
-    renderer, window, interactor = vrh.make_render_kit(actors=[actor], size=args.resolution)
+    actor = make_actor(warp)
+    renderer, window, interactor = make_render_kit(actors=[actor], size=args.resolution)
 
     interactor.Initialize()
     window.Render()

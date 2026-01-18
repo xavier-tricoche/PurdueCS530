@@ -14,7 +14,7 @@ __all__ = [
     'load_camera',
     'print_camera',
     'save_light',
-    'load_light',
+    'load_lights',
     'print_light',
 ]
 

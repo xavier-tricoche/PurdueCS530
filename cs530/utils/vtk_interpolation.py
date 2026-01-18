@@ -30,6 +30,10 @@ def import_dataset(filename):
             reader = vtk.vtkXMLImageDataReader(file_name=filename)
             reader.Update()
             return reader.GetOutput()
+        case '.vtr':
+            reader = vtk.vtkXMLRectilinearGridReader(file_name=filename)
+            reader.Update()
+            return reader.GetOutput()
         case '.vts':
             reader = vtk.vtkXMLStructuredGridReader(file_name=filename)
             reader.Update()

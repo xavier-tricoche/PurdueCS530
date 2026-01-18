@@ -12,9 +12,9 @@ Helper functions to create color palettes and color maps
 
 __all__ = [
     'make_cube_axis_actor', 
-    'make_color_map', 
-    'make_color_transfer_function', 
-    'make_opacity_transfer_function'
+    'make_colormap', 
+    'create_vtk_colors', 
+    'import_palette',
 ]
 
 # Colorful axis orientation cube

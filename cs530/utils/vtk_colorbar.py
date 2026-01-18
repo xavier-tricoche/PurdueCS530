@@ -4,11 +4,11 @@ Helper functions for the creation of colorbar actors in VTK
 '''
 
 __all__ = [
-    'colorbar_param',
-    'colorbar',
+    'ColorbarParam',
+    'Colorbar',
 ]
 
-class colorbar_param:
+class ColorbarParam:
     def __init__(self, title='No title', title_col=[1,1,1], title_font_size=22, 
         label_col=[1,1,1], pos=[0.9, 0.5], width=80, height=400, 
         nlabels=4, font_size=18, title_offset=10):
@@ -23,11 +23,11 @@ class colorbar_param:
         self.title_offset=title_offset
         self.title_font_size=title_font_size
 
-class colorbar:
+class Colorbar:
     def __init__(self, ctf, param=None, is_float=True):
         # size and relative position
         if param is None:
-            param = colorbar_param()
+            param = ColorbarParam()
         if is_float:
             format='%0.2f'
         else:

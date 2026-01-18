@@ -19,6 +19,11 @@ import vtk
 from vtk.qt.QVTKRenderWindowInteractor import QVTKRenderWindowInteractor
 import sys
 
+__all__ = [
+    'QtVTKProgram',
+    'slider_setup'
+]
+
 '''
 Convenience functions for PyQt
 '''

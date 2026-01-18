@@ -3,7 +3,7 @@
 '''
  Purdue CS530 - Introduction to Scientific Visualization
  Spring 2026 
- 
+
  This program demonstrates how to use VTK with Qt to create a simple GUI 
  comprising slider bars, push buttons, text windows, and check boxes.
 '''
@@ -23,9 +23,9 @@ except ImportError:
         from PyQt5.QtWidgets import QApplication, QLabel, QCheckBox, QGridLayout, QPushButton, QSlider, QTextEdit
         from PyQt5.QtCore import Qt
 
-import utils.vtk_rendering_helper as vrh
-import utils.vtk_helper as vh
-import utils.vtk_qt as vqt
+from cs530.utils.vtk_rendering import take_screenshot, make_actor
+from cs530.utils.vtk_helper import connect
+from cs530.utils.vtk_qt import slider_setup, QtVTKProgram
 
 frame_counter = 0
 
@@ -35,9 +35,9 @@ def make_sphere(resolution_theta, resolution_phi, edge_radius):
 
     # extract and visualize the edges
     edge_extractor = vtk.vtkExtractEdges()
-    vh.connect(sphere_source, edge_extractor)
+    connect(sphere_source, edge_extractor)
     edge_tubes = vtk.vtkTubeFilter(radius=edge_radius, number_of_sides=10)
-    vh.connect(edge_extractor, edge_tubes)
+    connect(edge_extractor, edge_tubes)
     return [sphere_source, edge_tubes]
 
 def save_frame(window, log):
@@ -47,7 +47,7 @@ def save_frame(window, log):
     # Save current contents of render window to PNG file
     # ---------------------------------------------------------------
     file_name = args.output + str(frame_counter).zfill(5) + ".png"
-    vrh.take_screenshot(window, file_name)
+    take_screenshot(window, file_name)
     frame_counter += 1
 
 def print_camera_settings(camera, text_window, log):
@@ -58,7 +58,7 @@ def print_camera_settings(camera, text_window, log):
     log.insertPlainText('Updated camera info\n');
 
 
-class QtDemo (vqt.QtVTKProgram):
+class QtDemo (QtVTKProgram):
 
     def __init__(self, parent = None):
         super().__init__(parent)
@@ -109,8 +109,8 @@ class QtDemo (vqt.QtVTKProgram):
 
         # Source
         [self.sphere, self.edges] = make_sphere(self.theta, self.phi, self.radius)
-        sphere_actor = vrh.make_actor(self.sphere, color=(1, 1, 0))
-        self.edge_actor = vrh.make_actor(self.edges, color=(0, 0, 1))
+        sphere_actor = make_actor(self.sphere, color=(1, 1, 0))
+        self.edge_actor = make_actor(self.edges, color=(0, 0, 1))
 
         # Add actors to the renderer
         self.renderer.AddActor(sphere_actor)
@@ -118,9 +118,9 @@ class QtDemo (vqt.QtVTKProgram):
         self.renderer.GradientBackgroundOn()  # Set gradient for background
         self.renderer.SetBackground(0.75, 0.75, 0.75)  # Set background to silver
 
-        vqt.slider_setup(self.slider_theta, self.theta, [3, 200], 10)
-        vqt.slider_setup(self.slider_phi, self.phi, [3, 200], 10)
-        vqt.slider_setup(self.slider_radius, self.radius*100, [1, 10], 1)
+        slider_setup(self.slider_theta, self.theta, [3, 200], 10)
+        slider_setup(self.slider_phi, self.phi, [3, 200], 10)
+        slider_setup(self.slider_radius, self.radius*100, [1, 10], 1)
 
     def theta_callback(self, val):
         self.theta = val

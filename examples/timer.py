@@ -3,7 +3,7 @@
 '''
  Purdue CS530 - Introduction to Scientific Visualization
  Spring 2026 
- 
+
  Example showing how to use the TimerEvent to create a simple animation,
  and how to use vtkTextActor to display text in the visualization
 '''
@@ -30,11 +30,10 @@ import vtk
 import sys
 import numpy as np
 from vtk.util import numpy_support
-import os
 
-from utils.vtk_qt import QtVTKProgram, slider_setup
-from utils.vtk_rendering import make_actor
-from utils.vtk_helper import connect
+from cs530.utils.vtk_qt import QtVTKProgram, slider_setup
+from cs530.utils.vtk_rendering import make_actor
+from cs530.utils.vtk_helper import connect
 
 frame_counter = 0
 

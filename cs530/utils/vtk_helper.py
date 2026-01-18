@@ -6,9 +6,9 @@ import os
 '''
 
 __all__ = [
-    connect,
-    correct_reader,
-    correct_writer,
+    'connect',
+    'correct_reader',
+    'correct_writer',
 ]
 
 def is_algorithm(object):
