@@ -108,7 +108,8 @@ def import_palette(palette_name='viridis', N=16):
         print('invalid palette name or number of colors')
         raise ValueError('invalid palette name or number of colors')
     lut = cmap(X=range(N))
-    colors = vtk.vtkColorSeries(number_of_colors=N)
+    colors = vtk.vtkColorSeries()
+    colors.SetNumberOfColors(N)
     # print('import color map with {} colors'.format(N))
     for i in range(N):
         rgba = lut[i]
@@ -150,3 +151,34 @@ def make_colormap(scheme_name, ctrl_pts):
         cmap.AddRGBPoint(ctrl_pts[i], d[0], d[1], d[2])
         # print(f'{i}: {ctrl_pts[i]} . {c} / {d}')
     return cmap
+
+def main():
+    from cs530.utils.vtk_rendering import make_actor, make_render_kit
+
+    y0 = 0
+    dy = 5
+    values = np.linspace(0, 1, 100)
+    actors = []
+    for name in ['viridis', 'magma', 'inferno', 'plasma', 'cividis', 'Purples', 'Blues', 'Greens', 'PuRd', 'RdPu', 'YlGnBu']:
+        cmap = make_colormap(name, [0, 1])
+        aplane = vtk.vtkPlaneSource()
+        aplane.SetXResolution(100)
+        aplane.SetYResolution(1)
+        aplane.SetOrigin(0, y0, 0)
+        aplane.SetPoint1(100, y0, 0)
+        aplane.SetPoint2(0, y0+dy, 0)
+        aplane.Update()
+        data = aplane.GetOutput()
+        data.GetCellData().SetScalars(numpy_to_vtk(values))
+        actor = make_actor(data, cmap)
+        actors.append(actor)
+        y0 += dy + 0.1
+        print(cmap)
+
+    renderer, window, interactor = make_render_kit(actors=actors)
+    interactor.Initialize()
+    window.Render()
+    interactor.Start()
+
+if __name__ == '__main__':
+    main()
