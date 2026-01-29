@@ -135,12 +135,11 @@ def make_colormap(scheme_name, ctrl_pts):
     else:
         print(f'Requested color scheme {scheme_name} has index {g}')
     n = colors.GetNumberOfColors()
-    # print(f'{n} colors')
-    if len(ctrl_pts) == 2:
-        f = interpolate.interp1d(x=[0, n-1], y=ctrl_pts)
-        ctrl_pts = f(range(n))
-    elif len(ctrl_pts) != n:
-        raise ValueError('Numbers of colors and control points don\'t match')
+    nctrl = len(ctrl_pts)
+    colids = np.linspace(0, n-1, nctrl, dtype=int)
+    intp = interpolate.interp1d(x=colids, y=ctrl_pts)
+    ctrl_pts = intp(range(n))
+
     cmap = vtk.vtkColorTransferFunction()
     for i in range(n):
         c = colors.GetColor(i)
@@ -154,7 +153,7 @@ def make_colormap(scheme_name, ctrl_pts):
 
 def main():
     from cs530.utils.vtk_rendering import make_actor, make_render_kit
-
+    
     y0 = 0
     dy = 5
     values = np.linspace(0, 1, 100)

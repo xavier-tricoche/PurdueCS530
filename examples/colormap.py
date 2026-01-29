@@ -4,6 +4,8 @@ from vtk.util import numpy_support
 import argparse 
 
 from cs530.utils.vtk_rendering import make_actor, make_render_kit 
+from cs530.utils.vtk_colors import make_colormap
+from cs530.utils.vtk_colorbar import Colorbar
 
 delta = 0.01
 
@@ -20,23 +22,19 @@ if __name__ == '__main__':
     image = vtk.vtkImageData(dimensions=(args.resolution, args.resolution, 1))
     image.GetPointData().SetScalars(numpy_support.numpy_to_vtk(data2d.flatten(order='F')))
 
-    cmap = vtk.vtkColorTransferFunction()
-    cmap.AddRGBPoint(-1, 0, 0, 1)
-    if args.gentle:
-        cmap.AddRGBPoint(-0.1, 0.5, 0.5, 1) 
-    if args.highlight is None:
-        cmap.AddRGBPoint(0, 1, 1, 1)
+
+    if not args.gentle:
+        ctpt = [-1, -0.1, 0, 0.1, 1]
     else:
-        cmap.AddRGBPoint(-delta, 1, 1, 1)
-        cmap.AddRGBPoint(-delta+0.00001, args.highlight[0], args.highlight[1], args.highlight[2])
-        cmap.AddRGBPoint(+delta-0.00001, args.highlight[0], args.highlight[1], args.highlight[2])
-        cmap.AddRGBPoint(+delta, 1, 1, 1)
-    if args.gentle:
-        cmap.AddRGBPoint(0.1, 1, 1, 0.5)
-    cmap.AddRGBPoint(1, 1, 1, 0)
+        ctpt = [-1, 1]
+    cmap = make_colormap('seismic', ctpt)
+    cbar = Colorbar(cmap)
+    cbar.set_title('Waves', 20)
 
     actor = make_actor(image, cmap)
-    renderer, window, interactor = make_render_kit(actors=[actor])
+    actor2d = cbar.get()
+
+    renderer, window, interactor = make_render_kit(actors=[actor, actor2d])
     interactor.Initialize()
     window.Render()
     interactor.Start()
