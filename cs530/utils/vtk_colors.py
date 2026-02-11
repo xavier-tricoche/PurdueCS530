@@ -119,16 +119,20 @@ def import_palette(palette_name='viridis', N=16):
     # print('color map created:\n {}'.format(colors))
     return colors
 
-def make_colormap(scheme_name, ctrl_pts):
+def make_colormap(scheme_name, ctrl_pts, diverging=False):
     colors = vtk.vtkColorSeries()
     # colors = newcolors
     m = colors.GetNumberOfColorSchemes()
     # print(f'There are {m} color schemes')
     g = colors.SetColorSchemeByName(scheme_name)
+    if diverging:
+        ncolors = 17
+    else:
+        ncolors = 16
     if g == m:
         # print('Requested color scheme was not found in VTK list')
         try:
-            colors = import_palette(scheme_name)
+            colors = import_palette(scheme_name, ncolors)
         except:
             print('unable to find requested color map: {}'.format(scheme_name))
             raise
@@ -174,7 +178,7 @@ def main():
         y0 += dy + 0.1
         print(cmap)
 
-    renderer, window, interactor = make_render_kit(actors=actors)
+    _, window, interactor = make_render_kit(actors=actors)
     interactor.Initialize()
     window.Render()
     interactor.Start()

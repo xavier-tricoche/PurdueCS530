@@ -71,7 +71,10 @@ Helper function to create the rendering elements (renderer, window, interactor).
 def make_render_kit(actors=[], **kwargs):
     renderer = vtk.vtkRenderer(background=kwargs.get('background', [0,0,0]))
     for a in actors:
-        renderer.AddActor(a)
+        if isinstance(a, vtk.vtkActor2D):
+            renderer.AddActor2D(a)
+        else:
+            renderer.AddActor(a)
     window = vtk.vtkRenderWindow(size=kwargs.get('size', (1024, 1024)))
     window.AddRenderer(renderer)
     interactor = vtk.vtkRenderWindowInteractor(render_window=window)
