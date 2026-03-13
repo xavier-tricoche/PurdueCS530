@@ -64,3 +64,10 @@ from cs530.utils.vtk_rendering import (
 from cs530.tools.pathlines import (
     trace_pathlines,
 )
+from cs530.tools.TensorLines import (
+    TensorLines,
+    RHS,
+)
+from cs530.tools.SuperquadricTensorGlyph import (
+    SuperquadricTensorGlyph,
+)
